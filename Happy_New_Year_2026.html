@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy New Year 2026</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}
+
+body{
+    background:#0b1221;
+    height:100vh;
+    overflow:hidden;
+    color:#fff;
+}
+
+canvas{
+    position:fixed;
+    top:0;left:0;
+    z-index:0;
+}
+
+/* WhatsApp Card */
+.card{
+    position:relative;
+    z-index:2;
+    width:90%;
+    max-width:360px;
+    margin:60px auto;
+    background:#1f2c34;
+    border-radius:18px;
+    padding:20px;
+    box-shadow:0 10px 40px rgba(0,0,0,.6);
+    text-align:center;
+}
+
+.header{
+    background:#005c4b;
+    padding:10px;
+    border-radius:12px;
+    font-size:1.1rem;
+}
+
+h1{
+    margin:15px 0 5px;
+    font-size:2rem;
+    color:#ffd700;
+}
+
+h2{
+    font-size:3rem;
+}
+
+p{
+    font-size:1rem;
+    margin-top:10px;
+}
+
+.countdown{
+    margin:15px 0;
+    font-size:1.1rem;
+    color:#25d366;
+}
+
+.from{
+    margin-top:15px;
+    font-size:1.1rem;
+    color:#ffda79;
+}
+
+/* Confetti */
+.confetti{
+    position:fixed;
+    top:-10px;
+    width:10px;
+    height:10px;
+    animation:fall linear infinite;
+}
+
+@keyframes fall{
+    to{transform:translateY(110vh) rotate(360deg);}
+}
+
+/* Balloons */
+.balloon{
+    position:fixed;
+    bottom:-150px;
+    width:50px;
+    height:65px;
+    background:red;
+    border-radius:50%;
+    animation:float 12s infinite;
+    z-index:1;
+}
+
+.balloon::after{
+    content:'';
+    position:absolute;
+    width:2px;
+    height:30px;
+    background:#ccc;
+    left:50%;
+    top:65px;
+}
+
+@keyframes float{
+    0%{transform:translateY(0)}
+    100%{transform:translateY(-120vh)}
+}
+
+.tap{
+    position:fixed;
+    bottom:15px;
+    width:100%;
+    text-align:center;
+    font-size:.9rem;
+    opacity:.7;
+    animation:blink 1.5s infinite;
+    z-index:3;
+}
+
+@keyframes blink{
+    50%{opacity:1}
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="fireworks"></canvas>
+
+<div class="card">
+    <div class="header">🎉 New Year Greeting</div>
+    <h1>Happy New Year</h1>
+    <h2>2026</h2>
+    <p>May your year be filled with happiness, success & peace ✨</p>
+    <div class="countdown" id="countdown"></div>
+    <div class="from" id="fromText"></div>
+</div>
+
+<div class="tap">👆 Tap anywhere</div>
+
+<!-- Music -->
+<audio id="music" loop>
+<source src="https://files.freemusicarchive.org/storage-freemusicarchive-org/music/no_curator/Komiku/Its_time_for_adventure/Komiku_-_12_-_Happy_Christmas.mp3">
+</audio>
+
+<script>
+/* NAME AUTO EMBED */
+const senderName = "Shikhar Saxena";   // 🔴 CHANGE NAME HERE
+document.getElementById("fromText").innerText = "From " + senderName + " ❤️";
+
+/* COUNTDOWN */
+const newYear = new Date("Jan 1, 2026 00:00:00").getTime();
+setInterval(()=>{
+    const now = new Date().getTime();
+    const d = newYear - now;
+    if(d<0){
+        document.getElementById("countdown").innerText="🎆 Welcome 2026!";
+        return;
+    }
+    const days=Math.floor(d/(1000*60*60*24));
+    const hrs=Math.floor((d%(1000*60*60*24))/(1000*60*60));
+    const min=Math.floor((d%(1000*60*60))/(1000*60));
+    const sec=Math.floor((d%(1000*60))/1000);
+    document.getElementById("countdown").innerText=
+    `⏳ ${days}d ${hrs}h ${min}m ${sec}s`;
+},1000);
+
+/* MUSIC ON TAP */
+let played=false;
+document.body.addEventListener("click",()=>{
+    if(!played){
+        document.getElementById("music").play();
+        played=true;
+    }
+});
+
+/* CONFETTI */
+for(let i=0;i<60;i++){
+    const c=document.createElement("div");
+    c.className="confetti";
+    c.style.left=Math.random()*100+"%";
+    c.style.background=`hsl(${Math.random()*360},100%,50%)`;
+    c.style.animationDuration=3+Math.random()*5+"s";
+    document.body.appendChild(c);
+}
+
+/* BALLOONS */
+for(let i=0;i<8;i++){
+    const b=document.createElement("div");
+    b.className="balloon";
+    b.style.left=Math.random()*100+"%";
+    b.style.background=`hsl(${Math.random()*360},80%,60%)`;
+    b.style.animationDuration=10+Math.random()*6+"s";
+    document.body.appendChild(b);
+}
+
+/* FIREWORKS */
+const canvas=document.getElementById("fireworks");
+const ctx=canvas.getContext("2d");
+canvas.width=innerWidth;
+canvas.height=innerHeight;
+let sparks=[];
+
+function burst(x,y){
+    for(let i=0;i<40;i++){
+        sparks.push({
+            x,y,
+            vx:(Math.random()-.5)*6,
+            vy:(Math.random()-.5)*6,
+            a:1
+        });
+    }
+}
+
+function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    sparks.forEach((p,i)=>{
+        p.x+=p.vx;
+        p.y+=p.vy;
+        p.a-=0.02;
+        ctx.fillStyle=`rgba(255,${Math.random()*255},0,${p.a})`;
+        ctx.fillRect(p.x,p.y,3,3);
+        if(p.a<=0) sparks.splice(i,1);
+    });
+    requestAnimationFrame(animate);
+}
+animate();
+
+document.addEventListener("click",e=>burst(e.clientX,e.clientY));
+</script>
+
+</body>
+</html>
